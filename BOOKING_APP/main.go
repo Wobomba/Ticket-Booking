@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 func main(){
@@ -18,25 +19,56 @@ func main(){
 	var userName string
 	var userTickets int
 
-	/*var bookings = [50]string{"Nana", "Nicole", "Peter"} --> using arrays
-	var bookings [50]string
-	bookings[0] = userName + " " + strconv.Itoa(userTickets)
-	fmt.Printf("List of attendees: %v\n", bookings)
-	fmt.Printf("The first attendee value: %v\n", bookings[0])*/
-
-	//creating a slice
+	//creating a slice and making it dynamic
 	bookings := []string{}
 	for {
-		//username input
+		//username input and validation
 		fmt.Println("Enter your name: ")
 		fmt.Scan(&userName)
 		fmt.Println("Enter the number of tickets: ")
 		fmt.Scan(&userTickets)
-		bookings = append(bookings, userName+"   "+strconv.Itoa(userTickets))
-		fmt.Printf("User %v booked %v tickets.\n", userName, userTickets)
-		fmt.Printf("The slice version: %v\n", bookings)
-		remainingTickets = remainingTickets - userTickets
-		fmt.Printf("%v tickets remaining for %v\n", remainingTickets,conferenceName)
+		
+		isValidName := len(userName) >= 2 
+		isValidTicketNum := userTickets > 0 && userTickets <= remainingTickets
+
+		if isValidName || isValidTicketNum{
+			bookings = append(bookings, userName+"   "+strconv.Itoa(userTickets))
+			fmt.Printf("User %v booked %v tickets.\n", userName, userTickets)
+			fmt.Printf("The slice version: %v\n", bookings)
+			//if the user inputs more tickets than the remaining tickets
+			if userTickets <= remainingTickets{
+				remainingTickets = remainingTickets - userTickets
+				fmt.Printf("%v tickets remaining for %v\n", remainingTickets,conferenceName)
+				
+				//iterating over a list
+				userNames := []string{}
+				for _, booking :=range bookings{
+					var names = strings.Fields(booking) 
+					userNames = append(userNames, names[0])
+
+				}
+				fmt.Printf("The names of the bookings are: %v\n", userNames)
+
+				noTicketLeft := remainingTickets == 0
+				if noTicketLeft{
+					fmt.Println("Our conference is booked out. Come back next year")
+					break
+				}
+			} else {
+				fmt.Printf("We only have %v tickets remaining, so you can't book %v tickets\n", remainingTickets, userTickets)
+				continue
+			}
+
+		}else{
+			//specifying what input data is wrong
+			if !isValidName{
+				fmt.Println("Your user name is too short")
+			}
+			if !isValidTicketNum{
+				fmt.Println("The number of tickets entered is not valid")
+			}
+			
+		}
 	}
 	
 
